@@ -124,7 +124,7 @@ def draw_nfa(nfa, filename="nfa"):
     for frm, sym, to in nfa.transitions:
         dot.node(frm.name, shape='circle')
         dot.node(to.name, shape='doublecircle' if to == nfa.end else 'circle')
-        label = 'ε' if sym.startswith('lambda') else sym
+        label = 'λ' if sym.startswith('lambda') else sym
         dot.edge(frm.name, to.name, label=label)
 
     dot.render(filename, view=True)

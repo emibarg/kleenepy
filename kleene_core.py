@@ -106,21 +106,24 @@ def kleene_algorithm(postfix_expr):
             stack.append(NFA(nfa1.start, nfa2.finals, transitions))
         elif symbol == '*':
             nfa = stack.pop()
-            start = State()
-            final = State(is_final=True)
+            start = State(is_final=True)
+            # final = State(is_final=True)
+            finals = []
+            finals.append(start)
             
             transitions = [
                 (start, 'lambda1', nfa.start),
-                (start, 'lambda2', final),
+                # (start, 'lambda2', final),
                 *nfa.transitions
             ]
             
             # Add epsilon transitions from each final state back to start and to the new final state
             for final_state in nfa.finals:
-                transitions.append((final_state, 'lambda1', nfa.start))
-                transitions.append((final_state, 'lambda2', final))
+                transitions.append((final_state, 'lambda1', start))
+                finals.append(final_state)
+                #transitions.append((final_state, 'lambda2', final))
             
-            stack.append(NFA(start, [final], transitions))
+            stack.append(NFA(start, finals, transitions))
         else:
             raise ValueError(f"Símbolo no reconocido: {symbol}")
 
@@ -202,7 +205,7 @@ def draw_nfa(nfa, filename="nfa_output"):
 
     # Add all transitions
     for frm, sym, to in nfa.transitions:
-        label = 'ε' if sym.startswith('lambda') else sym
+        label = 'λ' if sym.startswith('lambda') else sym
         dot.edge(frm.name, to.name, label=label)
 
     dot.render(filename, view=False)
